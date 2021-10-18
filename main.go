@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"time"
+
+	"github.com/hako/durafmt"
 )
 
 type data struct {
@@ -48,7 +50,7 @@ func start() {
 
 	var d data
 	json.Unmarshal(content, &d)
-	fmt.Println(d)
+	// fmt.Println(d)
 	if d.Started {
 		fmt.Println("Already running")
 		return
@@ -74,7 +76,7 @@ func start() {
 	}
 	f.Write(encoded)
 	f.Close()
-
+	fmt.Println("Started, good luck!")
 }
 
 func stop() {
@@ -88,7 +90,7 @@ func stop() {
 	var d data
 	json.Unmarshal(content, &d)
 
-	fmt.Println(d)
+	// fmt.Println(d)
 	if !d.Started {
 		fmt.Println("Already stopped")
 		return
@@ -112,6 +114,9 @@ func stop() {
 	}
 	f.Write(encoded)
 	f.Close()
+	fmt.Println("Stopped")
+	fmt.Println("You have worked for:")
+	fmt.Println(fmtDuration(d.Duration))
 }
 
 func status() {
@@ -129,12 +134,30 @@ func status() {
 	var d data
 	json.Unmarshal(content, &d)
 	fmt.Println("Currently running: ", d.Started)
-	fmt.Println("Duration till now: ", d.Duration)
+	// fmt.Println("Duration till now: ", fmtDuration(d.Duration))
 	if d.Started {
-		fmt.Println("Started at: ", d.Start)
+		fmt.Println("Started at: ", fmtTime(d.Start))
+		fmt.Println("Duration till now: ", fmtDuration(d.Duration+time.Since(d.Start)))
+		return
 	}
+	fmt.Println("Duration till now: ", fmtDuration(d.Duration))
 
 }
-func reset() {}
+func reset() {
+	f, err := os.Create("time.json")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	f.Write([]byte(`{"duration": 0, "start": 0, "started": false}`))
+}
+func fmtDuration(d time.Duration) string {
+	str := durafmt.Parse(d).LimitFirstN(3).String()
+	return str
+}
+func fmtTime(t time.Time) string {
+	// return fmt.Sprintf("%d:%d:%d", t.Hour, t.Minute, t.Second)
+	return t.Format(time.Kitchen)
+}
 
 // Add subtract time function
