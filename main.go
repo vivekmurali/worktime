@@ -25,6 +25,10 @@ func main() {
 		stop()
 	case "status":
 		status()
+	case "sub":
+		sub(args[2])
+	case "add":
+		add(args[2])
 	case "reset":
 		reset()
 	}
@@ -161,3 +165,73 @@ func fmtTime(t time.Time) string {
 }
 
 // Add subtract time function
+
+func add(s string) {
+	duration, err := time.ParseDuration(s)
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Open("time.json")
+	if err != nil {
+		panic(err)
+	}
+	// unmarshall json
+	content, err := io.ReadAll(f)
+
+	var d data
+	json.Unmarshal(content, &d)
+
+	d.Duration += duration
+	err = f.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	f, err = os.Create("time.json")
+	if err != nil {
+		panic(err)
+	}
+	encoded, err := json.Marshal(d)
+	if err != nil {
+		panic(err)
+	}
+	f.Write(encoded)
+	f.Close()
+	fmt.Printf("Added %s to the duration", s)
+}
+
+func sub(s string) {
+	duration, err := time.ParseDuration(s)
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Open("time.json")
+	if err != nil {
+		panic(err)
+	}
+	// unmarshall json
+	content, err := io.ReadAll(f)
+
+	var d data
+	json.Unmarshal(content, &d)
+
+	d.Duration -= duration
+	err = f.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	f, err = os.Create("time.json")
+	if err != nil {
+		panic(err)
+	}
+	encoded, err := json.Marshal(d)
+	if err != nil {
+		panic(err)
+	}
+	f.Write(encoded)
+	f.Close()
+	fmt.Printf("Subtracted %s from the duration", s)
+}
