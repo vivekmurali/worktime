@@ -18,6 +18,10 @@ type data struct {
 
 func main() {
 	args := os.Args
+	if len(args) == 1 {
+		fmt.Println("The commands are start, stop, status, sub, add and reset")
+		return
+	}
 	switch args[1] {
 	case "start":
 		start()
@@ -35,9 +39,14 @@ func main() {
 }
 
 func start() {
-	if _, err := os.Stat("time.json"); os.IsNotExist(err) {
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	if _, err := os.Stat(dir + "/time.json"); os.IsNotExist(err) {
 		// fmt.Println("File does not exist")
-		f, err := os.Create("time.json")
+		f, err := os.Create(dir + "/time.json")
 		f.Write([]byte(`{"duration": 0, "start": 0, "started": false}`))
 		err = f.Close()
 		if err != nil {
@@ -45,7 +54,7 @@ func start() {
 		}
 	}
 
-	f, err := os.Open("time.json")
+	f, err := os.Open(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
@@ -70,7 +79,7 @@ func start() {
 
 	// duration =
 
-	f, err = os.Create("time.json")
+	f, err = os.Create(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
@@ -84,7 +93,12 @@ func start() {
 }
 
 func stop() {
-	f, err := os.Open("time.json")
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Open(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
@@ -108,7 +122,7 @@ func stop() {
 		panic(err)
 	}
 
-	f, err = os.Create("time.json")
+	f, err = os.Create(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
@@ -124,7 +138,12 @@ func stop() {
 }
 
 func status() {
-	f, err := os.Open("time.json")
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Open(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
@@ -148,7 +167,12 @@ func status() {
 
 }
 func reset() {
-	f, err := os.Create("time.json")
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Create(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
@@ -172,7 +196,12 @@ func add(s string) {
 		panic(err)
 	}
 
-	f, err := os.Open("time.json")
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Open(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
@@ -188,7 +217,7 @@ func add(s string) {
 		panic(err)
 	}
 
-	f, err = os.Create("time.json")
+	f, err = os.Create(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
@@ -207,7 +236,12 @@ func sub(s string) {
 		panic(err)
 	}
 
-	f, err := os.Open("time.json")
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Open(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
@@ -223,7 +257,7 @@ func sub(s string) {
 		panic(err)
 	}
 
-	f, err = os.Create("time.json")
+	f, err = os.Create(dir + "/time.json")
 	if err != nil {
 		panic(err)
 	}
