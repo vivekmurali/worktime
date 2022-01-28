@@ -16,6 +16,8 @@ type data struct {
 	Started  bool          `json:"started"`
 }
 
+// WILL REFACTOR SOME DAY, THIS IS HORRIBLE CODE
+
 func main() {
 	args := os.Args
 	if len(args) == 1 {
@@ -189,7 +191,7 @@ func fmtTime(t time.Time) string {
 }
 
 // Add subtract time function
-
+// Use as a time string like 1h20m
 func add(s string) {
 	duration, err := time.ParseDuration(s)
 	if err != nil {
